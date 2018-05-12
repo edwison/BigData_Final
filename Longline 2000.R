@@ -40,12 +40,19 @@ longline2000_csv_cpue2 <- ddply(longline2000_csv_cpue1, .(yy, mm), summarize, hh
       bet_c = sum(bet_c), bet_n = sum(bet_n), mls_c = sum(mls_c), mls_n = sum(mls_n), blm_c = sum(blm_c), blm_n = sum(blm_n), bum_c = sum(bum_c), bum_n = sum(bum_n), 
       swo_c = sum(swo_c), swo_n = sum(swo_n), oth_c = sum(oth_c), oth_n = sum(oth_n), total_c_kg = sum(total_c_kg), total_n = sum(total_n))
 
-#create column of cpue, both in c (kg/hhooks) and n (idv/hhooks), and average of weight of each species (kg/n)
+#create column of cpue, both in c (kg/hhooks) and n (idv/hhooks), and average of weight of each species (kg/n), and date
 longline2000_csv_cpue3 <- longline2000_csv_cpue2 %>% mutate(cpue_c = (total_c_kg/hhooks)*100) %>% mutate(cpue_n = (total_n/hhooks)*100) %>% 
   mutate(alb_idv = (alb_c*1000)/alb_n) %>% mutate(yft_idv = (yft_c*1000)/yft_n) %>% mutate(bet_idv = (bet_c*1000)/bet_n) %>% mutate(mls_idv = (mls_c*1000)/mls_n) %>% 
   mutate(blm_idv = (blm_c*1000)/blm_n) %>% mutate(bum_idv = (bum_c*1000)/bum_n) %>% mutate(swo_idv = (swo_c*1000)/swo_n) %>% mutate(oth_idv = (oth_c*1000)/oth_n)
 
-#now, we have longline2000_csv_cpue3 as the data that ready to analyze.
+#add column of date from "month (mm)" and year "yy"
+longline2000_csv_cpue4 <- within(longline2000_csv_cpue3, Date <- sprintf("%d-%02d", yy, mm))
+
+#NOW, WE HAVE longline2000_csv_cpue3 AS THE DATA THAT READY TO ANALYZE
+#We are going to get output:
+#1. Fluctuation of Albacore, both in weight (ton) and number of individual.
+#2. Correlation between month and both cpue_c (weight) and cpue_n (number of individual)
+
 
 #correlation between: month and cpue_c
 cor(longline2000_csv_cpue3$mm, longline2000_csv_cpue3$cpue_c)
